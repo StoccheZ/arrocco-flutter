@@ -1,6 +1,9 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../logica/puzzle.dart';
+import 'modelli.dart';
+
 /// Database locale SQLite dell'app, gestito con sqflite.
 ///
 /// Tabelle:
@@ -57,5 +60,47 @@ class ArroccoDatabase {
   /// Scollega l'account; lo storico dei puzzle resta sul dispositivo.
   Future<void> eliminaProfilo() async {
     await (await _database).delete('profilo');
+  }
+
+  /// Puzzle del giorno indicato ("aaaa-mm-gg"), oppure null se non è ancora stato scaricato.
+  Future<Puzzle?> puzzleDelGiorno(String giorno) async {
+    final righe = await (await _database).query(
+      'puzzle',
+      where: 'giorno = ?',
+      whereArgs: [giorno],
+      limit: 1,
+    );
+    return righe.isEmpty ? null : Puzzle.daRiga(righe.first);
+  }
+
+  /// Puzzle con l'id indicato, oppure null.
+  Future<Puzzle?> puzzlePerId(String id) async {
+    final righe = await (await _database).query('puzzle', where: 'id = ?', whereArgs: [id], limit: 1);
+    return righe.isEmpty ? null : Puzzle.daRiga(righe.first);
+  }
+
+  /// Inserisce un puzzle; se esiste già non lo sovrascrive, così l'esito resta (IGNORE).
+  Future<void> inserisciPuzzle(Puzzle puzzle) async {
+    await (await _database).insert(
+      'puzzle',
+      puzzle.comeRiga(),
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
+  }
+
+  /// Salva esito ed errori dopo un tentativo di risoluzione.
+  Future<void> aggiornaEsito(String id, EsitoPuzzle esito, int errori) async {
+    await (await _database).update(
+      'puzzle',
+      {'esito': esito.codice, 'errori': errori},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  /// Tutti i puzzle affrontati, dal più recente (RF6).
+  Future<List<Puzzle>> storicoPuzzle() async {
+    final righe = await (await _database).query('puzzle', orderBy: 'giorno DESC');
+    return righe.map(Puzzle.daRiga).toList();
   }
 }

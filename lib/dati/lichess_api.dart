@@ -44,4 +44,15 @@ class LichessApi {
     final json = jsonDecode(utf8.decode(risposta.bodyBytes)) as Map<String, dynamic>;
     return Utente.fromJson(json);
   }
+
+  /// Puzzle del giorno di Lichess, associato al [giorno] indicato (RF3).
+  Future<Puzzle> getPuzzleDelGiorno(String giorno) async {
+    final indirizzo = Uri.parse('$_indirizzoBase/api/puzzle/daily');
+    final risposta = await _client.get(indirizzo, headers: _intestazioni).timeout(_attesaMassima);
+    if (risposta.statusCode != 200) {
+      throw http.ClientException('Risposta inattesa da Lichess: ${risposta.statusCode}', indirizzo);
+    }
+    final json = jsonDecode(utf8.decode(risposta.bodyBytes)) as Map<String, dynamic>;
+    return Puzzle.daJsonDelGiorno(json, giorno);
+  }
 }

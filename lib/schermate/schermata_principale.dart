@@ -1,7 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../dati/lichess_api.dart';
+import '../dati/puzzle_repository.dart';
 import 'home.dart';
+import 'puzzle.dart';
 
 /// Schermata con la barra di navigazione in basso: Home, Puzzle e Storico.
 ///
@@ -13,11 +15,13 @@ class SchermataPrincipale extends StatefulWidget {
     super.key,
     required this.username,
     required this.api,
+    required this.puzzleRepository,
     required this.onScollega,
   });
 
   final String username;
   final LichessApi api;
+  final PuzzleRepository puzzleRepository;
   final VoidCallback onScollega;
 
   @override
@@ -31,7 +35,7 @@ class _SchermataPrincipaleState extends State<SchermataPrincipale> {
   Widget build(BuildContext context) {
     final schede = [
       SchermataHome(username: widget.username, api: widget.api, onScollega: widget.onScollega),
-      const _SchedaInArrivo(titolo: 'Puzzle del giorno'),
+      SchermataPuzzle(repository: widget.puzzleRepository),
       const _SchedaInArrivo(titolo: 'Storico puzzle'),
     ];
     return Scaffold(
@@ -49,7 +53,7 @@ class _SchermataPrincipaleState extends State<SchermataPrincipale> {
   }
 }
 
-/// Segnaposto temporaneo, sostituito dalle schermate vere nei passi successivi.
+/// Segnaposto temporaneo, sostituito dalla schermata vera nel prossimo passo.
 class _SchedaInArrivo extends StatelessWidget {
   const _SchedaInArrivo({required this.titolo});
 

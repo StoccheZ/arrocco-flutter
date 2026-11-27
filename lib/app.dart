@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'dati/database.dart';
 import 'dati/lichess_api.dart';
 import 'dati/modelli.dart';
+import 'dati/puzzle_repository.dart';
 import 'schermate/onboarding.dart';
 import 'schermate/schermata_principale.dart';
 
@@ -44,6 +45,8 @@ class _Avvio extends StatefulWidget {
 }
 
 class _AvvioState extends State<_Avvio> {
+  late final PuzzleRepository _puzzleRepository =
+      PuzzleRepository(api: widget.api, database: widget.database);
   bool _caricato = false;
   String? _username;
 
@@ -83,6 +86,11 @@ class _AvvioState extends State<_Avvio> {
     if (username == null) {
       return SchermataOnboarding(api: widget.api, onCollegato: _collegato);
     }
-    return SchermataPrincipale(username: username, api: widget.api, onScollega: _scollega);
+    return SchermataPrincipale(
+      username: username,
+      api: widget.api,
+      puzzleRepository: _puzzleRepository,
+      onScollega: _scollega,
+    );
   }
 }
