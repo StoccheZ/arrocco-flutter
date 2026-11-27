@@ -31,6 +31,7 @@ flutter run
 ```
 
 Per generare l'APK: `flutter build apk --release` (il file è in `build/app/outputs/flutter-apk/`).
+L'APK firmato è disponibile nella [release v1.0](https://github.com/StoccheZ/arrocco-flutter/releases/tag/v1.0).
 
 ## Struttura
 
