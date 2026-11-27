@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "itunivpm.arrocco"
+    namespace = "it.univpm.arrocco.flutter"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,8 +15,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "itunivpm.arrocco"
+        // Diverso dall'app Kotlin (it.univpm.arrocco): le due app possono stare sullo stesso dispositivo
+        applicationId = "it.univpm.arrocco.flutter"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
