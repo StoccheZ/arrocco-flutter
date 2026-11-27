@@ -4,6 +4,7 @@ import '../dati/lichess_api.dart';
 import '../dati/puzzle_repository.dart';
 import 'home.dart';
 import 'puzzle.dart';
+import 'storico.dart';
 
 /// Schermata con la barra di navigazione in basso: Home, Puzzle e Storico.
 ///
@@ -31,12 +32,21 @@ class SchermataPrincipale extends StatefulWidget {
 class _SchermataPrincipaleState extends State<SchermataPrincipale> {
   int _indice = 0;
 
+  /// Cambia quando un puzzle viene concluso: la nuova chiave fa ricaricare lo storico.
+  int _versioneStorico = 0;
+
   @override
   Widget build(BuildContext context) {
     final schede = [
       SchermataHome(username: widget.username, api: widget.api, onScollega: widget.onScollega),
-      SchermataPuzzle(repository: widget.puzzleRepository),
-      const _SchedaInArrivo(titolo: 'Storico puzzle'),
+      SchermataPuzzle(
+        repository: widget.puzzleRepository,
+        onPuzzleConcluso: () => setState(() => _versioneStorico++),
+      ),
+      SchermataStorico(
+        key: ValueKey(_versioneStorico),
+        repository: widget.puzzleRepository,
+      ),
     ];
     return Scaffold(
       body: SafeArea(child: IndexedStack(index: _indice, children: schede)),
@@ -49,20 +59,6 @@ class _SchermataPrincipaleState extends State<SchermataPrincipale> {
           NavigationDestination(icon: Icon(Icons.history), label: 'Storico'),
         ],
       ),
-    );
-  }
-}
-
-/// Segnaposto temporaneo, sostituito dalla schermata vera nel prossimo passo.
-class _SchedaInArrivo extends StatelessWidget {
-  const _SchedaInArrivo({required this.titolo});
-
-  final String titolo;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('$titolo in arrivo', style: Theme.of(context).textTheme.titleMedium),
     );
   }
 }

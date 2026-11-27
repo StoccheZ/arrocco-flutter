@@ -10,6 +10,7 @@ import 'package:arrocco/logica/puzzle.dart';
 import 'package:arrocco/schermate/onboarding.dart';
 import 'package:arrocco/schermate/puzzle.dart';
 import 'package:arrocco/schermate/schermata_principale.dart';
+import 'package:arrocco/schermate/storico.dart';
 
 const String _profiloJson =
     '{"id":"stocchez","username":"StoccheZ","perfs":{"blitz":{"games":12,"rating":1194,"prog":25}}}';
@@ -143,5 +144,17 @@ void main() {
     expect(find.text('Puzzle risolto con 1 errore'), findsOneWidget);
     expect(repository.salvato?.esito, EsitoPuzzle.risoltoConErrori);
     expect(repository.salvato?.errori, 1);
+  });
+
+  testWidgets('storico: statistiche ed elenco dei puzzle', (tester) async {
+    _schermoTelefono(tester);
+    final repository = _PuzzleFinto()..salvato = _puzzle.conEsito(EsitoPuzzle.risoltoConErrori, 2);
+    await tester.pumpWidget(MaterialApp(home: Scaffold(body: SchermataStorico(repository: repository))));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Storico puzzle'), findsOneWidget);
+    expect(find.text('100%'), findsOneWidget);
+    expect(find.text('Puzzle del 27/11/2026'), findsOneWidget);
+    expect(find.text('Risolto con errori (2)'), findsOneWidget);
   });
 }
